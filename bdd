@@ -1,0 +1,57 @@
+-- Script SQL pour la création de la base de données du projet de gestion de jeux vidéo
+
+-- Création de la table 'games'
+CREATE TABLE games (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL,
+    genres TEXT,  -- stocker les genres sous forme de chaîne JSON
+    publicationDate INT,  -- stocker la date de publication sous forme de timestamp UNIX
+    platform TEXT  -- stocker les plateformes sous forme de chaîne JSON
+);
+
+-- Création de la table 'editors'
+CREATE TABLE editors (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Création de la table 'studios'
+CREATE TABLE studios (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(255) NOT NULL
+);
+
+-- Relations entre les jeux, les éditeurs et les studios
+-- Ces tables serviront à établir des relations many-to-many
+
+-- Table de jointure pour les jeux et les éditeurs
+CREATE TABLE game_editors (
+    game_id INT,
+    editor_id INT,
+    PRIMARY KEY (game_id, editor_id),
+    FOREIGN KEY (game_id) REFERENCES games(id),
+    FOREIGN KEY (editor_id) REFERENCES editors(id)
+);
+
+-- Table de jointure pour les jeux et les studios
+CREATE TABLE game_studios (
+    game_id INT,
+    studio_id INT,
+    PRIMARY KEY (game_id, studio_id),
+    FOREIGN KEY (game_id) REFERENCES games(id),
+    FOREIGN KEY (studio_id) REFERENCES studios(id)
+);
+
+-- Exemples d'insertions de données
+INSERT INTO games (name, genres, publicationDate, platform) VALUES
+('Mass Effect', '["RPG", "Sci-Fi"]', UNIX_TIMESTAMP('2007-11-20'), '["PC", "Xbox"]'),
+('Assassin\'s Creed', '["Action", "Adventure"]', UNIX_TIMESTAMP('2007-11-13'), '["PC", "PlayStation", "Xbox"]'),
+('The Legend of Zelda', '["Action", "Adventure"]', UNIX_TIMESTAMP('1986-02-21'), '["Nintendo"]');
+
+INSERT INTO editors (name) VALUES ('BioWare'), ('Ubisoft'), ('Nintendo');
+INSERT INTO studios (name) VALUES ('EA'), ('Ubisoft'), ('Nintendo');
+
+-- Insertions pour les tables de jointure
+-- Remplacez les IDs par les IDs correspondants des jeux, éditeurs et studios
+INSERT INTO game_editors (game_id, editor_id) VALUES (1, 1), (2, 2), (3, 3);
+INSERT INTO game_studios (game_id, studio_id) VALUES (1, 1), (2, 2), (3, 3);
